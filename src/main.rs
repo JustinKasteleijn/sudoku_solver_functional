@@ -1,5 +1,3 @@
-use std::iter::Flatten;
-
 fn main() {
     let mut sudoku: [[usize; 9]; 9] = [
         [0, 0, 3, 0, 2, 0, 6, 0, 0],
@@ -47,20 +45,23 @@ fn no_conflict(grid: &[[usize; 9]; 9], row: usize, col: usize, val: usize) -> bo
     matrix_check && row_col_check
 }
 
-fn find_empty_cell_opt(grid: &[[usize; 9]; 9]) -> (usize, usize) {
-    for row in 0..9 {
-        for col in 0..9 {
-            if grid[row][col] == 0 {
-                return (row, col);
-            }
-        }
-    }
-    (9, 9)
-}
+// fn find_empty_cell_opt(grid: &[[usize; 9]; 9]) -> (usize, usize) {
+//     for row in 0..9 {
+//         for col in 0..9 {
+//             if grid[row][col] == 0 {
+//                 return (row, col);
+//             }
+//         }
+//     }
+//     (9, 9)
+// }
 
 fn find_empty_cell(grid: &[[usize; 9]; 9]) -> (usize, usize) {
-    let x: usize = grid.iter().flatten().position(|x| x == &0).unwrap_or(82);
-    (x / 9, x % 9)
+    let pos: usize = grid.into_iter()
+        .flatten()
+        .position(|x| x == &0)
+        .unwrap_or(82);
+    (pos / 9, pos % 9)
 }
 
 fn test_sudoku_solver(grid: &[[usize; 9]; 9]) -> bool {
@@ -76,10 +77,7 @@ fn test_sudoku_solver(grid: &[[usize; 9]; 9]) -> bool {
         [6, 9, 5, 4, 1, 7, 3, 8, 2]
     ];
 
-    for (r_row, e_row) in result.iter().zip(grid.iter()) {
-        if r_row != e_row {
-            return false;
-        }
-    }
-    true
+    result.iter()
+        .zip(grid.iter())
+        .all(|(x, y)| x == y)
 }
